@@ -16,4 +16,3 @@ class TrackAudioFeatures(BaseModel):
     tempo: Optional[float]
     valence: Optional[float]
     speechiness: Optional[float]
-
