@@ -68,3 +68,25 @@ def remove_from_playlist(db: Session, playlist: UserPlaylistBase):
     if db_entry:
         db.delete(db_entry)
         db.commit()
+
+
+# 트랙 전체 데이터 가져오기
+def get_all_tracks(db: Session):
+    tracks = db.query(Track).all()
+    return [
+        {
+            "id": track.id,
+            "name": track.name,
+            "artist": track.artist,
+            "image": track.image,
+            "acousticness": track.acousticness,
+            "danceability": track.danceability,
+            "instrumentalness": track.instrumentalness,
+            "energy": track.energy,
+            "tempo": track.tempo,
+            "valence": track.valence,
+            "speechiness": track.speechiness,
+        }
+        for track in tracks
+    ]
+

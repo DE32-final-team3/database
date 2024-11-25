@@ -1,8 +1,8 @@
-from fastapi import FastAPI, Depends, HTTPException
+from fastapi import FastAPI, Depends
 from sqlalchemy.orm import Session
 from app.database import get_db, engine
 from app.schemas import TrackBase, TrackAudioFeatures, UserPlaylistBase
-from app.crud import insert_track_info, update_audio_features, add_to_playlist, remove_from_playlist
+from app.crud import insert_track_info, update_audio_features, add_to_playlist, remove_from_playlist, get_all_tracks
 from app.models import Base
 
 # 데이터베이스 테이블 생성
@@ -14,7 +14,7 @@ app = FastAPI()
 @app.post("/tracks/")
 def create_tracks(tracks: list[TrackBase], db: Session = Depends(get_db)):
     insert_track_info(db, tracks)
-    return {"message": "Tracks inserted or updated successfully"}
+    return {"message": "Tracks inserted successfully"}
 
 # Audio Features를 업데이트하는 엔드포인트
 @app.put("/tracks/audio-features/")
@@ -34,3 +34,10 @@ def add_track(playlist: UserPlaylistBase, db: Session = Depends(get_db)):
 def remove_track(playlist: UserPlaylistBase, db: Session = Depends(get_db)):
     remove_from_playlist(db, playlist)
     return {"message": "Track removed from playlist successfully"}
+
+
+# 트랙 전체 데이터 가져오기
+@app.get("/tracks/")
+def get_tracks(db: Session = Depends(get_db)):
+    tracks = get_all_tracks(db)
+    return {"tracks": tracks}
