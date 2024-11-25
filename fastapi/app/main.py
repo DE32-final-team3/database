@@ -2,7 +2,7 @@ from fastapi import FastAPI, Depends
 from sqlalchemy.orm import Session
 from app.database import get_db, engine
 from app.schemas import TrackBase, TrackAudioFeatures, UserPlaylistBase
-from app.crud import insert_track_info, update_audio_features, add_to_playlist, remove_from_playlist, get_all_tracks
+from app.crud import insert_track_info, update_audio_features, add_to_playlist, remove_from_playlist, get_all_tracks, get_tracks_by_user
 from app.models import Base
 
 # 데이터베이스 테이블 생성
@@ -40,4 +40,11 @@ def remove_track(playlist: UserPlaylistBase, db: Session = Depends(get_db)):
 @app.get("/tracks/")
 def get_tracks(db: Session = Depends(get_db)):
     tracks = get_all_tracks(db)
+    return {"tracks": tracks}
+
+
+# 특정 사용자의 플레이리스트에서 트랙 가져오기
+@app.get("/user-playlist/{user_id}")
+def get_user_tracks(user_id: str, db: Session = Depends(get_db)):
+    tracks = get_tracks_by_user(db, user_id)
     return {"tracks": tracks}
