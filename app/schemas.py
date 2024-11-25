@@ -16,3 +16,7 @@ class TrackAudioFeatures(BaseModel):
     tempo: Optional[float]
     valence: Optional[float]
     speechiness: Optional[float]
+
+class UserPlaylistBase(BaseModel):
+    user_id: str
+    track_id: str

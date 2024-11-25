@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, Float
+from sqlalchemy import Column, String, Float, ForeignKey, PrimaryKeyConstraint
 from sqlalchemy.orm import declarative_base
 
 Base = declarative_base()
@@ -19,3 +19,11 @@ class Track(Base):
     speechiness = Column(Float, nullable=True)
 
 
+class UserPlaylist(Base):
+    __tablename__ = "user_playlist"
+
+    user_id = Column(String(255), nullable=False)
+    track_id = Column(String(255), ForeignKey("track.id"), nullable=False)
+
+    # 복합 기본 키 설정
+    __table_args__ = (PrimaryKeyConstraint("user_id", "track_id"),)

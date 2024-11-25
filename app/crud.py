@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
-from models import Track
-from schemas import TrackBase, TrackAudioFeatures
+from models import Track, UserPlaylist
+from schemas import TrackBase, TrackAudioFeatures, UserPlaylistBase
 
 # Track 기본 정보를 저장하는 함수
 def insert_track_info(db: Session, tracks: list[TrackBase]):
@@ -36,3 +36,35 @@ def update_audio_features(db: Session, features: list[TrackAudioFeatures]):
             db_track.speechiness = feature.speechiness
     db.commit()
 
+
+# 플레이리스트에 트랙 추가
+def add_to_playlist(db: Session, playlist: UserPlaylistBase):
+    existing_entry = (
+        db.query(UserPlaylist)
+        .filter(
+            UserPlaylist.user_id == playlist.user_id,
+            UserPlaylist.track_id == playlist.track_id,
+        )
+        .first()
+    )
+    if not existing_entry:
+        db_entry = UserPlaylist(
+            user_id=playlist.user_id,
+            track_id=playlist.track_id,
+        )
+        db.add(db_entry)
+        db.commit()
+
+# 플레이리스트에서 트랙 제거
+def remove_from_playlist(db: Session, playlist: UserPlaylistBase):
+    db_entry = (
+        db.query(UserPlaylist)
+        .filter(
+            UserPlaylist.user_id == playlist.user_id,
+            UserPlaylist.track_id == playlist.track_id,
+        )
+        .first()
+    )
+    if db_entry:
+        db.delete(db_entry)
+        db.commit()
