@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
-from models import Track, UserPlaylist
-from schemas import TrackBase, TrackAudioFeatures, UserPlaylistBase
+from app.models import Track, UserPlaylist
+from app.schemas import TrackBase, TrackAudioFeatures, UserPlaylistBase
 
 # Track 기본 정보를 저장하는 함수
 def insert_track_info(db: Session, tracks: list[TrackBase]):

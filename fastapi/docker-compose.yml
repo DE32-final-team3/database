@@ -1,0 +1,13 @@
+services:
+  fastapi_app:
+    build:
+      context: .
+    ports:
+      - "8000:8000"
+    environment:
+      - DB_HOST=mariadb
+      - DB_PORT=3306
+      - DB_USER=tune
+      - DB_PASSWORD=talk
+      - DB_NAME=tunetalk
+

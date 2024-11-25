@@ -1,9 +1,9 @@
 from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
-from database import get_db, engine
-from schemas import TrackBase, TrackAudioFeatures, UserPlaylistBase
-from crud import insert_track_info, update_audio_features, add_to_playlist, remove_from_playlist
-from models import Base
+from app.database import get_db, engine
+from app.schemas import TrackBase, TrackAudioFeatures, UserPlaylistBase
+from app.crud import insert_track_info, update_audio_features, add_to_playlist, remove_from_playlist
+from app.models import Base
 
 # 데이터베이스 테이블 생성
 Base.metadata.create_all(bind=engine)
