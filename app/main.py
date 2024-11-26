@@ -38,7 +38,7 @@ from sqlalchemy.orm import Session
 from database import get_db
 from schemas import TrackBase, TrackAudioFeatures
 from crud import insert_track_info, update_audio_features
-from models import Track
+from models import Base, Track
 
 app = FastAPI()
 @app.on_event("startup")
