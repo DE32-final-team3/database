@@ -6,8 +6,8 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: team3
       MYSQL_DATABASE: spotify_db
-      MYSQL_USER: root
-      MYSQL_PASSWORD: team3
+#      MYSQL_USER: root
+#      MYSQL_PASSWORD: team3
     ports:
       - "3306:3306"
     volumes:
