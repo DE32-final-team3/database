@@ -2,7 +2,7 @@ from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
 from database import engine, get_db
 from schemas import TrackBase, TrackAudioFeatures, UserPlaylistBase
-from crud import insert_track_info, update_audio_features
+from crud import insert_track_info, update_audio_features, add_to_playlist, remove_from_playlist, get_all_tracks, get_tracks_by_user
 from models import Base, Track
 
 app = FastAPI()

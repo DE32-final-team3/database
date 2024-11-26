@@ -1,39 +1,6 @@
-# from sqlalchemy.orm import Session
-# from models import Track
-
-# def create_track(db: Session, track_data: dict, audio_features: dict = None):
-#     new_track = Track(
-#         id=track_data["id"],
-#         name=track_data["name"],
-#         artist=track_data["artist"],
-#         image=track_data["image"]
-#     )
-#     db.add(new_track)
-#     db.commit()
-#     db.refresh(new_track)
-
-#     if audio_features:
-#         update_track_details(db, new_track.id, audio_features)
-
-#     return {"success": f"Track '{new_track.name}' by {new_track.artist} 저장 및 업데이트 완료."}
-
-# def update_track_details(db: Session, track_id: str, track_details: dict):
-#     track = db.query(Track).filter(Track.id == track_id).first()
-#     if not track:
-#         return {"error": f"Track ID '{track_id}'를 찾을 수 없습니다."}
-
-#     for key, value in track_details.items():
-#         if hasattr(track, key) and value is not None:
-#             setattr(track, key, value)
-
-#     db.commit()
-#     db.refresh(track)
-#     return {"success": f"Track ID '{track_id}'의 오디오 피처가 성공적으로 업데이트되었습니다."}
-
-
 from sqlalchemy.orm import Session
-from models import Track
-from schemas import TrackBase, TrackAudioFeatures
+from models import Track, UserPlaylist
+from schemas import TrackBase, TrackAudioFeatures, UserPlaylistBase
 
 # Track 기본 정보를 저장하는 함수
 def insert_track_info(db: Session, tracks: list[TrackBase]):
@@ -69,3 +36,81 @@ def update_audio_features(db: Session, features: list[TrackAudioFeatures]):
             db_track.speechiness = feature.speechiness
     db.commit()
 
+# 플레이리스트에 트랙 추가
+def add_to_playlist(db: Session, playlist: UserPlaylistBase):
+    existing_entry = (
+        db.query(UserPlaylist)
+        .filter(
+            UserPlaylist.user_id == playlist.user_id,
+            UserPlaylist.track_id == playlist.track_id,
+        )
+        .first()
+    )
+    if not existing_entry:
+        db_entry = UserPlaylist(
+            user_id=playlist.user_id,
+            track_id=playlist.track_id,
+        )
+        db.add(db_entry)
+        db.commit()
+
+# 플레이리스트에서 트랙 제거
+def remove_from_playlist(db: Session, playlist: UserPlaylistBase):
+    db_entry = (
+        db.query(UserPlaylist)
+        .filter(
+            UserPlaylist.user_id == playlist.user_id,
+            UserPlaylist.track_id == playlist.track_id,
+        )
+        .first()
+    )
+    if db_entry:
+        db.delete(db_entry)
+        db.commit()
+
+
+# 트랙 전체 데이터 가져오기
+def get_all_tracks(db: Session):
+    tracks = db.query(Track).all()
+    return [
+        {
+            "id": track.id,
+            "name": track.name,
+            "artist": track.artist,
+            "image": track.image,
+            "acousticness": track.acousticness,
+            "danceability": track.danceability,
+            "instrumentalness": track.instrumentalness,
+            "energy": track.energy,
+            "tempo": track.tempo,
+            "valence": track.valence,
+            "speechiness": track.speechiness,
+        }
+        for track in tracks
+    ]
+
+
+# 특정 사용자의 플레이리스트에서 트랙 가져오기
+def get_tracks_by_user(db: Session, user_id: str):
+    tracks = (
+        db.query(Track)
+        .join(UserPlaylist, Track.id == UserPlaylist.track_id)
+        .filter(UserPlaylist.user_id == user_id)
+        .all()
+    )
+    return [
+        {
+            "id": track.id,
+            "name": track.name,
+            "artist": track.artist,
+            "image": track.image,
+            "acousticness": track.acousticness,
+            "danceability": track.danceability,
+            "instrumentalness": track.instrumentalness,
+            "energy": track.energy,
+            "tempo": track.tempo,
+            "valence": track.valence,
+            "speechiness": track.speechiness,
+        }
+        for track in tracks
+    ]
