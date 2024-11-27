@@ -20,3 +20,19 @@ class TrackAudioFeatures(BaseModel):
 class UserPlaylistBase(BaseModel):
     user_id: str
     track_id: str
+
+
+class UserPlaylistBase(BaseModel):
+    user_id: str
+    track_id: str
+
+
+class UserTasteBase(BaseModel):
+    user_id: str
+    acousticness: float = None
+    danceability: float = None
+    instrumentalness: float = None
+    energy: float = None
+    tempo: float = None
+    valence: float = None
+    speechiness: float = None
