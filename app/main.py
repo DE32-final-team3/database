@@ -4,6 +4,7 @@ from database import engine, get_db
 from schemas import TrackBase, TrackAudioFeatures, UserPlaylistBase, UserTasteBase
 from crud import insert_track_info, update_audio_features, add_to_playlist, remove_from_playlist, get_all_tracks, get_tracks_by_user, add_follow, update_user_taste
 from models import Base, Track
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 @app.on_event("startup")

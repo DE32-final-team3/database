@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, Float, ForeignKey, PrimaryKeyConstraint
+from sqlalchemy import Column, String, Float, ForeignKey, PrimaryKeyConstraint, DateTime
 from sqlalchemy.orm import declarative_base
 
 Base = declarative_base()
@@ -26,6 +26,17 @@ class UserPlaylist(Base):
 
     # 복합 기본 키 설정
     __table_args__ = (PrimaryKeyConstraint("user_id", "track_id"),)
+
+class User(Base):
+    __tablename__ = "user"
+    id = Column(
+        String(255), primary_key=True, default=lambda: str(uuid.uuid4()), nullable=False
+    )
+    email = Column(String(255), unique=True, nullable=False)
+    nickname = Column(String(255), unique=True, nullable=False)
+    password = Column(String(255), nullable=False)
+    profile = Column(String(255), nullable=False)
+    create_at = Column(DateTime(timezone=True))
 
 class Following(Base):
     __tablename__ = "following"

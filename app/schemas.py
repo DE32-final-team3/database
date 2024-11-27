@@ -21,6 +21,11 @@ class UserPlaylistBase(BaseModel):
     user_id: str
     track_id: str
 
+class Following(BaseModel):
+    user_id: str
+    follower: str
+    following: str
+
 class UserTasteBase(BaseModel):
     user_id: str
     acousticness: float = None
