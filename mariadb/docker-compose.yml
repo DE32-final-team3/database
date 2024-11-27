@@ -9,4 +9,6 @@ services:
       MYSQL_DATABASE: tunetalk
       MYSQL_USER: tune
       MYSQL_PASSWORD: talk
+    volumes:
+      - ./initdb:/docker-entrypoint-initdb.d  # Mount the directory with SQL scripts
 
