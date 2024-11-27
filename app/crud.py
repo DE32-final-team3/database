@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from models import Track, UserPlaylist
+from models import Track, UserPlaylist, Following, UserTaste
 from schemas import TrackBase, TrackAudioFeatures, UserPlaylistBase
 
 # Track 기본 정보를 저장하는 함수
@@ -114,3 +114,57 @@ def get_tracks_by_user(db: Session, user_id: str):
         }
         for track in tracks
     ]
+
+# 팔로잉 팔로우
+def add_follow(db: Session, user_id: str, follower_id: str):
+    # Check if the follow relationship already exists
+    existing = (
+        db.query(Following)
+        .filter(
+            Following.following == user_id,
+            Following.follower == follower_id,
+        )
+        .first()
+    )
+    if not existing:
+        # Create new follow relationship
+        follow = Following(
+            following=user_id,
+            follower=follower_id,
+        )
+        db.add(follow)
+        db.commit()
+        return {"message": f"User {user_id} is now following {follower_id}"}
+    else:
+        return {"message": f"User {user_id} is already following {follower_id}"}
+    
+
+
+# 특정 사용자의 취향 분석 결과 저장 업데이트 
+def update_user_taste(db: Session, tastes: list[dict]):
+    for taste in tastes:
+        # Query the UserTaste table
+        existing_taste = db.query(UserTaste).filter(UserTaste.user_id == taste["user_id"]).first()
+        if existing_taste:
+            # Update existing user taste
+            existing_taste.acousticness = taste.get("acousticness", existing_taste.acousticness)
+            existing_taste.danceability = taste.get("danceability", existing_taste.danceability)
+            existing_taste.instrumentalness = taste.get("instrumentalness", existing_taste.instrumentalness)
+            existing_taste.energy = taste.get("energy", existing_taste.energy)
+            existing_taste.tempo = taste.get("tempo", existing_taste.tempo)
+            existing_taste.valence = taste.get("valence", existing_taste.valence)
+            existing_taste.speechiness = taste.get("speechiness", existing_taste.speechiness)
+        else:
+            # Insert a new user taste
+            new_taste = UserTaste(
+                user_id=taste["user_id"],
+                acousticness=taste.get("acousticness"),
+                danceability=taste.get("danceability"),
+                instrumentalness=taste.get("instrumentalness"),
+                energy=taste.get("energy"),
+                tempo=taste.get("tempo"),
+                valence=taste.get("valence"),
+                speechiness=taste.get("speechiness"),
+            )
+            db.add(new_taste)
+    db.commit()
