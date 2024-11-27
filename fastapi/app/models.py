@@ -22,7 +22,7 @@ class Track(Base):
 class UserPlaylist(Base):
     __tablename__ = "user_playlist"
 
-    user_id = Column(String(255), nullable=False)
+    user_id = Column(String(255), ForeignKey("user.ID"), nullable=False)
     track_id = Column(String(255), ForeignKey("track.id"), nullable=False)
 
     # 복합 기본 키 설정
