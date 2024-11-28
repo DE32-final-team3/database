@@ -117,27 +117,27 @@ def get_tracks_by_user(db: Session, user_id: str):
     ]
 
 # 팔로잉 팔로우
-def add_follow(db: Session, user_id: str, follower_id: str):
+def add_follow(db: Session, user_id: str, following: str):
     # Check if the follow relationship already exists
     existing = (
         db.query(Following)
         .filter(
-            Following.following == user_id,
-            Following.follower == follower_id,
+            Following.user_id == user_id,
+            Following.following == following,
         )
         .first()
     )
     if not existing:
         # Create new follow relationship
         follow = Following(
-            following=user_id,
-            follower=follower_id,
+            user_id=user_id,
+            following=following,
         )
         db.add(follow)
         db.commit()
-        return {"message": f"User {user_id} is now following {follower_id}"}
+        return {"message": f"User {user_id} is now following {following}"}
     else:
-        return {"message": f"User {user_id} is already following {follower_id}"}
+        return {"message": f"User {user_id} is already following {following}"}
     
 
 

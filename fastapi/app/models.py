@@ -44,10 +44,10 @@ class User(Base):
 class Following(Base):
     __tablename__ = "following"
 
+    user_id = Column(String(255), ForeignKey("user.id"), nullable=False)
     following = Column(String(255), ForeignKey("user.id"), nullable=False)
-    follower = Column(String(255), ForeignKey("user.id"), nullable=False)
 
-    __table_args__ = (PrimaryKeyConstraint("following", "follower"),)
+    __table_args__ = (PrimaryKeyConstraint("user_id", "following"),)
 
 
 class UserTaste(Base):
